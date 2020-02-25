@@ -18,11 +18,17 @@ describe Oystercard do
 		expect { subject.top_up 100 }.to raise_error("Exceeds topup limit: #{Oystercard::LIMIT}")
 	end
 	it 'touches in' do 
-		subject.in_use = true
+		subject.top_up(5)
+		subject.touch_in
 		expect(subject.in_journey?).to eq(true)
 	end
+	it 'prevents touch in when balance smaller than minimum' do
+		expect { subject.touch_in } .to raise_error('Not enough funds')
+	end
 	it "touches out" do
-		subject.in_use = false
+		subject.top_up(5)
+		subject.touch_in
+		subject.touch_out
 		expect(subject.in_journey?). to eq(false)
 	end
 end
