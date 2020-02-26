@@ -2,25 +2,26 @@ class Oystercard
 	LIMIT = 90
 	MINIMUM = 1
 	PENALTY = 6
-	attr_reader :balance, :journey_log, :in_journey, :current_journey
+	attr_reader :balance, :journey_log, :current_journey
 	def initialize
 		@balance = 0
 		@journey_log = []
-		@in_journey = false
 	end 
 	def top_up(amount)
 		fail "Exceeds topup limit: #{LIMIT}" if balance + amount > LIMIT
 		@balance += amount
 	end
 	def touch_in(station)
+		if @current_journey then conclude_journey(nil) end
 		raise 'Not enough funds' if @balance < MINIMUM
-		@in_journey = true
 		make_journey(station)
 	end
 	def touch_out(station)
-		deduct(MINIMUM)
-		@in_journey  = false
 		conclude_journey(station)
+		@current_journey = nil
+	end
+	def in_journey?
+		 @current_journey ? true : false
 	end
 	private 
 	def deduct(amount)
@@ -32,6 +33,7 @@ class Oystercard
 	end
 	def conclude_journey(station)
 		@current_journey.finish_journey(station)
+		deduct(@current_journey.fare)
 		store_journey
 	end
 	def store_journey
@@ -49,6 +51,7 @@ end
   end
   def finish_journey(station)
   	@journey[:exit_station] = station
+  	@journey[:fare] = fare
   end
   def fare 
   	if !@journey[:entry_station] || !@journey[:exit_station]
