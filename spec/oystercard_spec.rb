@@ -48,9 +48,6 @@ describe Oystercard do
   	subject.touch_out("Peckham Rye")
   	expect(subject.journey_log[0][:exit_station]).to eq "Peckham Rye"
   end
-end
-
-describe Journey do 
 	it "returns fare when touched in and out" do 
 		card = Oystercard.new
 		card.top_up(5)
@@ -58,11 +55,22 @@ describe Journey do
 		card.touch_out("Euston Square")
 		expect(card.journey_log[0][:fare]). to eq (Oystercard::MINIMUM)
 	end
-	it "returns penalty if not touched_in or touched out" do
+	it "returns penalty if not touched out" do
 		card = Oystercard.new
 		card.top_up(10)
 		card.touch_in('Farringdon')
 		card.touch_in('Hackney')
 		expect(card.journey_log[0][:fare]). to eq (Oystercard::PENALTY)
 	end
+	it "returns penalty if not touched in" do
+		card = Oystercard.new
+		card.top_up(10)
+		card.touch_out('Farringdon')
+		expect(card.journey_log[0][:fare]). to eq (Oystercard::PENALTY)
+	end
+end
+
+describe Journey do 
+	it { is_expected.to respond_to(:journey) }
+	it { is_expected.to respond_to(:fare) }
 end

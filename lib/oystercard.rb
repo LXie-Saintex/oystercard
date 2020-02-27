@@ -2,7 +2,7 @@ class Oystercard
 	LIMIT = 90
 	MINIMUM = 1
 	PENALTY = 6
-	attr_reader :balance, :journey_log, :current_journey
+	attr_reader :balance, :journey_log
 	def initialize
 		@balance = 0
 		@journey_log = []
@@ -17,6 +17,7 @@ class Oystercard
 		make_journey(station)
 	end
 	def touch_out(station)
+		if !@current_journey then make_journey(nil) end
 		conclude_journey(station)
 		@current_journey = nil
 	end
