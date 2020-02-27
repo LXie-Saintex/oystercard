@@ -70,7 +70,3 @@ describe Oystercard do
 	end
 end
 
-describe Journey do 
-	it { is_expected.to respond_to(:journey) }
-	it { is_expected.to respond_to(:fare) }
-end

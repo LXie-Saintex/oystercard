@@ -40,25 +40,26 @@ class Oystercard
 	def store_journey
 		@journey_log << @current_journey.journey
 	end	
-end
 
- class Journey
- 	attr_reader :journey
-  def initialize
-	  @journey = {} 
+	class Journey
+	 	attr_reader :journey
+	  def initialize
+		  @journey = {} 
+		end
+	  def start_journey(station)
+	  	@journey[:entry_station] = station
+	  end
+	  def finish_journey(station)
+	  	@journey[:exit_station] = station
+	  	@journey[:fare] = fare
+	  end
+	  def fare 
+	  	if !@journey[:entry_station] || !@journey[:exit_station]
+	  		Oystercard::PENALTY 
+	  	else 
+	  		Oystercard::MINIMUM
+	  	end
+	  end 
 	end
-  def start_journey(station)
-  	@journey[:entry_station] = station
-  end
-  def finish_journey(station)
-  	@journey[:exit_station] = station
-  	@journey[:fare] = fare
-  end
-  def fare 
-  	if !@journey[:entry_station] || !@journey[:exit_station]
-  		Oystercard::PENALTY 
-  	else 
-  		Oystercard::MINIMUM
-  	end
-  end 
- end
+  private_constant :Journey
+end
